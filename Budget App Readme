@@ -1,4 +1,8 @@
-Enhanced Features to add:
+Program to manage personal budgets with quickbooks style evaluation
+
+Project creates categories of expenses to track budgeting; accept deposits, withdraws, and transfers from users, and generates a spending chart to display breakdowns of spending (NOT fluxuation in finances--deposits are excluded). Currently, data can be stored in a JSON file and read back into the program on load.
+
+Features to add:
 
 Implement save and restore via file storing:
 write to JSON file and select file to read from when opening program
