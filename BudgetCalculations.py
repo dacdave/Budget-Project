@@ -11,12 +11,12 @@ class Category:
   def add_category(cls, item):
     Category.categories.append(item)
 
-  def __init__(self, expense_type):
+  def __init__(self, expense_type, *target):
     self.expense_type = expense_type
     self.ledger = []
-    self.total = 0
+    self.balance = 0
     self.spending = 0
-    self.expense_target = 0
+    self.expense_target = target if target != None else 0
     self.expense_target_frequency = "Monthly"
     self.activity_log = []
     Category.add_category(self)
@@ -26,14 +26,21 @@ class Category:
     self.expense_target_frequency = frequency
 
   def deposit(self, amount, description="", date = datetime.datetime.now()):
-    self.total += amount
+    self.balance += amount
     date_string = date.strftime("%d-%b-%Y")
     activity = {"amount": amount, "activity type": "deposit", "date": date_string}
     self.activity_log.append(activity)
     self.ledger.append({"amount": amount, "description": description, "date": date_string})
   
+  def recurring_deposit(self,amount, date, description=""):
+    self.balance += amount
+    date_string = date.strftime("%d-%b-%Y")
+    activity = {"amount": amount, "activity type": "deposit", "date": date_string}
+    self.activity_log.append(activity)
+    self.ledger.append({"amount": amount, "description": description, "date": date_string})
+
   def withdraw(self, amount, description="", date = datetime.datetime.now()):
-    self.total -= amount
+    self.balance -= amount
     self.spending += amount
     date_string = date.strftime("%d-%b-%Y")
     activity = {"amount": amount, "type": "withdraw", "date": date_string}
@@ -48,8 +55,8 @@ class Category:
     return transfer
 
   def check_funds(self, amount):
-    if amount > self.total:
-      over_target = abs(self.total - amount)
+    if amount > self.balance:
+      over_target = abs(self.balance - amount)
       return over_target
     else:
       return True
@@ -73,7 +80,10 @@ class Category:
     return display
     
   def get_balance(self):
-    return self.total
+    return self.balance
+  
+  def get_target(self):
+    return [self.expense_target, self.expense_target_frequency]
 
 #Default categories for expenditures
 food = Category("Food")
@@ -84,19 +94,6 @@ house = Category("Household")
 debts = Category("Debt Payoff")
 pets = Category("Pets")
 misc = Category("Miscellaneous")
-
-# def save_budget(file_name):
-#   content = []
-#   for i in Category.categories:
-#     content.append(i.expense_type)
-#     for x in i.ledger:
-#         cat_ledger = []
-#         for key in x:
-#             cat_ledger.append(f"{key}:  {x[key]}")
-#         content.append(", ".join(cat_ledger))
-#     content.extend([f"Total: {i.total}", f"Spending: {i.spending}"])
-#   save_file = open(f"{file_name}.txt", "w")
-#   save_file.write("\n".join(content))
 
 def save_budget(file_name):
   full_ledger = {}
