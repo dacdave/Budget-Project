@@ -18,6 +18,7 @@ class Category:
     self.spending = 0
     self.expense_target = 0
     self.expense_target_frequency = "Monthly"
+    self.activity_log = []
     Category.add_category(self)
 
   def set_target(self, amount, frequency="Monthly"):
@@ -27,12 +28,16 @@ class Category:
   def deposit(self, amount, description="", date = datetime.datetime.now()):
     self.total += amount
     date_string = date.strftime("%d-%b-%Y")
+    activity = {"amount": amount, "activity type": "deposit", "date": date_string}
+    self.activity_log.append(activity)
     self.ledger.append({"amount": amount, "description": description, "date": date_string})
   
   def withdraw(self, amount, description="", date = datetime.datetime.now()):
     self.total -= amount
     self.spending += amount
     date_string = date.strftime("%d-%b-%Y")
+    activity = {"amount": amount, "type": "withdraw", "date": date_string}
+    self.activity_log.append(activity)
     self.ledger.append({"amount": -amount, "description": description, "date": date_string})
     return True
   
@@ -61,7 +66,9 @@ class Category:
       line_item = item_spacing(expense_desc, " ", 30, expense_amount)
       line_items.append(line_item)
     total = item_spacing("Total:", " ", 30, str(self.get_balance()))
+    target_left = item_spacing("Remaining budget:", " ", 30, str(self.expense_target - self.spending))
     line_items.append(total)
+    line_items.append(target_left)
     display = "\n".join(line_items)
     return display
     
@@ -179,12 +186,9 @@ class AsciiBarChart:
 
     return "\n".join(lines)
 
-def test():
-  food.deposit(1000, "deposit")
-  food.transfer(100, transportation)
-  transportation.deposit(5000,"new car payment plus some prep money for future payments")
-  clothes.deposit(200,"new shirt")
-  print(food)
-  print(transportation)
-  print(clothes)
-  print(create_spend_chart(Category.categories))
+def cash_report(start, stop, initial_balance=0):
+  report = []
+  for i in Category.categories:
+    if i.activity_log[2] > start and i.activity_log[2] < stop: #Pretty sure date doesn't work this way
+      report.append(i.activity_log)
+      report.sort(key=lambda x: x.date) #curently no attribute of class called "date"
