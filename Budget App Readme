@@ -1,8 +1,14 @@
-Program to manage personal budgets with quickbooks style evaluation
+Program to manage personal budgets with quickbooks style evaluation.
 
-Project creates categories of expenses to track budgeting; accept deposits, withdraws, and transfers from users, and generates a spending chart to display breakdowns of spending (NOT fluxuation in finances--deposits are excluded). Currently, data can be stored in a JSON file and read back into the program on load.
+Project goals:
+1. Track balance of accounts over time
+2. run predictive cash flow analysis using future predictions of expenses and deposits
+3. store data on withdraws and deposits
+4. evaluate bank statements for spending trends
+5. compare intended budget to actual spending
 
-Features to add:
+
+Features to include:
 
 Implement save and restore via file storing:
 write to JSON file and select file to read from when opening program

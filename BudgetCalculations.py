@@ -5,13 +5,13 @@ import os.path
 from os import path
 
 class Category:
-  categories = []
+  categories = ["Uncategorized"]
 
   @classmethod
   def add_category(cls, item):
     Category.categories.append(item)
 
-  def __init__(self, expense_type, *target):
+  def __init__(self, *expense_type, **target):
     self.expense_type = expense_type
     self.ledger = []
     self.balance = 0
