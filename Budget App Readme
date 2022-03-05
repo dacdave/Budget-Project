@@ -1,22 +1,23 @@
 Program to manage personal budgets with quickbooks style evaluation.
 
 Project goals:
-1. Track balance of accounts over time
-2. run predictive cash flow analysis using future predictions of expenses and deposits
-3. store data on withdraws and deposits
-4. evaluate bank statements for spending trends
-5. compare intended budget to actual spending
+1. Track balance of accounts and spending trends over time
+2. Run predictive cash flow analysis using future expenses and deposits
+3. Store data on withdraws and deposits
+4. Import bank statements
+5. Compare intended budget to actual spending
+6. Export documents of reports
 
 
 Features to include:
 
 Implement save and restore via file storing:
-write to JSON file and select file to read from when opening program
+Create database of information using SQLite
 
 Read/Write to Files:
 Read CSV to import data from bank account
-Run report on overspending for various categories
-Run report on spending breakdowns within a category (requires subcategories)
+Run report on overspending for various categories (Excel?)
+Run report on spending breakdowns within a category (Excel?)
 
 Date Tracking/Trend Evaluations:
 Add recurring charges
