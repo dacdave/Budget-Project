@@ -4,7 +4,6 @@ import json
 import datetime
 import os.path
 from os import path
-#from typing_extensions import Self
 from typing import List, Optional
 from decimal import Decimal
 from abc import ABC, abstractmethod
@@ -27,9 +26,9 @@ class Account:
 class Transaction:
     def __init__(
             self,
-            category: Category_new,
             amount: Decimal,
             description: str,
+            category: Category_new,
             date: date = datetime.date.today()):
 
         if type(date) == str:
@@ -125,7 +124,7 @@ class Ledger:
     def __init__(self, name: str):
         self.name = name
         self.transactions = []
-        self.balance = 0
+        self.balance: Decimal = 0
 
     def __str__(self):
         header = head_spacing(self.name, "*", 50)
@@ -149,15 +148,12 @@ class Ledger:
             self, start_date: date, end_date: date) -> List[Transaction]:
         pass
 
-    def compare(self, other: Ledger) -> LedgerDiff:
+    def compare(self, other: Ledger):
         pass
 
     def get_balance(self):
         return self.balance
 
-
-class LedgerDiff:
-    pass
 
 
 class Category_new:

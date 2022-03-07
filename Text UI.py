@@ -38,13 +38,13 @@ def new_test():
 
 def transaction_test():
       print("This is a test of the transaction methods.")
-      main = Ledger("Main Account")
+      main = Account("Main Account")
       food = Category_new("Food", 600)
       eatingout = food.add_child_category("Eating out", 200)
-      main.add_transaction(Transaction(500, "Paycheck", "03-04-2022"))
-      main.add_transaction(Transaction(-20, "Pizza", datetime.date.today(), eatingout))
-      print(main.get_balance())
-      print(main)
+      main.ledger.add_transaction(Transaction(Decimal(500), "Paycheck", main.root_category,"03-04-2022"))
+      main.ledger.add_transaction(Transaction(Decimal(-20), "Pizza", eatingout, datetime.date.today()))
+      print(main.ledger.get_balance())
+      print(main.ledger)
     
     
 
