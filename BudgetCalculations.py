@@ -1,20 +1,102 @@
+from __future__ import annotations
 from datetime import date, datetime
 import json
 import datetime
 import os.path
 from os import path
-from typing_extensions import Self
-from __future__ import annotations
+#from typing_extensions import Self
 from typing import List, Optional
 from decimal import Decimal
 from abc import ABC, abstractmethod
+from copy import copy
+
+# def __str__(self):
+#         expenses = self.ledger
+#         format = head_spacing(self.expense_type, "*", 30)
+#         line_items = [format]
+#         for i in expenses:
+#             index = self.ledger.index(i)
+#             expense = expenses[index]
+#             expense_desc = expense["description"]
+#             expense_amount = "{:.2f}".format(expense["amount"])
+#             line_item = item_spacing(expense_desc, " ", 30, expense_amount)
+#             line_items.append(line_item)
+#         total = item_spacing("Total:", " ", 30, str(self.get_balance()))
+#         target_left = item_spacing("Remaining budget:", " ", 30, str(
+#             self.expense_target - self.spending))
+#         line_items.append(total)
+#         line_items.append(target_left)
+#         display = "\n".join(line_items)
+#         return display
+
+# for i in problem:
+#       len_list = [i[0], i[2]]
+#       spacing = len(max(len_list, key=len)) + 2
+#       l1.append(str(i[0]).rjust(spacing, " "))
+#       l2.append(str(i[1]).ljust(1, " ") + str(i[2]).rjust(spacing - 1, " "))
+#       l3.append("-" * spacing)
+#       if resolve == True:
+#           l4.append(str(i[3]).rjust(spacing, " "))
+#   line1 = "    ".join(l1)
+#   line2 = "    ".join(l2)
+#   line3 = "    ".join(l3)
+
+class Account:
+    def __init__(self, name: str):
+        self.ledger = Ledger(name)
+        self.root_category = Category_new("All")
+        self.root_category.add_child_category("Food")
+        self.root_category.add_child_category("Transportation")
+        self.root_category.add_child_category("Clothing")
+        self.root_category.add_child_category("Entertainment")
+        self.root_category.add_child_category("Household")
+        self.root_category.add_child_category("Debt Payoff")
+        self.root_category.add_child_category("Pets")
+        
 
 
 class Transaction:
-    date: date = None
-    amount: Decimal = Decimal(0)
-    description: str = ""
-    category: Optional[Category_new] = None
+    def __init__(
+            self,
+            category: Category_new,
+            amount: Decimal,
+            description: str,
+            date: date = datetime.date.today()):
+
+        if type(date) == str:
+            self.date = datetime.datetime.strptime(date, "%m-%d-%Y")
+        else:
+            self.date = date
+        self.amount = amount
+        self.description = description
+        self.category = category
+
+    def __str__(self):
+        transaction_date = self.date.strftime("%m-%d-%Y")
+        transaction_amount = "$ " + "{:.2f}".format(self.amount)
+        if len(transaction_amount) > 14:
+            transaction_amount = "Too Large."
+        name = self.description
+        if len(name) > 23:
+            name = name[0:24]
+        elements = [
+            transaction_date.ljust(9, " "),
+            name.ljust(23, " "),
+            transaction_amount.rjust(14, " ")]
+        display = "  ".join(elements)  # should be 50 characters across
+        return display
+
+    def get_amount(self):
+        return self.amount
+
+    def get_date(self):
+        return self.date
+
+    def get_category(self):
+        return self.category
+
+    def get_description(self):
+        return self.description
 
 
 class Frequency(ABC):
@@ -23,13 +105,17 @@ class Frequency(ABC):
             self,
             range_start: date,
             range_end: date,
-            reference_date: date
-    ):
+            reference_date: date):
         pass
 
 
 class Monthly(Frequency):
-    pass
+    def get_occurrences(
+            self,
+            range_start: date,
+            range_end: date,
+            reference_date: date):
+        pass
 
 
 class Yearly(Frequency):
@@ -41,16 +127,53 @@ class Regularly(Frequency):
 
 
 class TransactionSchedule:
-    start_date: date = None
-    frequency: Frequency = None
-    end_date: date = None  # optional
-    template: Transaction = None
+    def __init__(
+            self,
+            template: Transaction,
+            start_date: date,
+            *end_date: Optional[date],
+            frequency: Frequency = Monthly):
+        self.template = template
+        self.start_date = start_date
+        self.end_date = end_date
+        self.frequency = frequency
+    
+    def get_transactions(self, range_start, range_end):
+        dates = self.frequency.get_occurrences(range_start, range_end, self.start_date)
+        sched_transactions = []
+        for date in dates:
+            transaction = copy(self.template)
+            transaction.date = date
+            sched_transactions.append(transaction)
+        return sched_transactions
+            
+
+
 
 
 class Ledger:
-    transactions = []
+
+    def __init__(self, name: str):
+        self.name = name
+        self.transactions = []
+        self.balance = 0
+
+    def __str__(self):
+        header = head_spacing(self.name, "*", 50)
+        elements = [header]
+        for i in self.transactions:
+            elements.append(str(i))
+        total = item_spacing("\nBalance:", " ", 51, str(
+            "$ " + "{:.2f}".format(self.get_balance())))
+        elements.append(total)
+        display = "\n".join(elements)  # should be 50 characters across
+        return display
 
     def add_transaction(self, transaction: Transaction) -> None:
+        self.balance += transaction.get_amount()
+        self.transactions.append(transaction)
+    
+    def add_scheduled_transaction():
         pass
 
     def get_transactions_in_range(
@@ -60,14 +183,36 @@ class Ledger:
     def compare(self, other: Ledger) -> LedgerDiff:
         pass
 
+    def get_balance(self):
+        return self.balance
+
 
 class LedgerDiff:
     pass
 
 
 class Category_new:
-    name: str = ""
-    parent: Optional[Category_new] = None
+    def __init__(self, name: str, goal: Optional[Decimal]=None, parent: Optional[Category_new]=None):
+        self.name = name
+        self.parent = parent
+        self.goal = goal
+        self.spending = 0
+        self.children = []
+
+    def set_goal(self, amount):
+        self.goal = Decimal(amount)
+
+    def check_available(self):
+        remaining = self.goal - self.spending
+        if remaining <= 0:
+            return "No balance available."
+        else:
+            return f"$ {remaining} available in budget."
+    
+    def add_child_category(self, *args, **kwargs):
+        c = Category_new(*args, **kwargs, parent = self)
+        self.children.append(c)
+        return c
 
 
 class Category:
