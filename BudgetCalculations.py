@@ -10,37 +10,6 @@ from decimal import Decimal
 from abc import ABC, abstractmethod
 from copy import copy
 
-# def __str__(self):
-#         expenses = self.ledger
-#         format = head_spacing(self.expense_type, "*", 30)
-#         line_items = [format]
-#         for i in expenses:
-#             index = self.ledger.index(i)
-#             expense = expenses[index]
-#             expense_desc = expense["description"]
-#             expense_amount = "{:.2f}".format(expense["amount"])
-#             line_item = item_spacing(expense_desc, " ", 30, expense_amount)
-#             line_items.append(line_item)
-#         total = item_spacing("Total:", " ", 30, str(self.get_balance()))
-#         target_left = item_spacing("Remaining budget:", " ", 30, str(
-#             self.expense_target - self.spending))
-#         line_items.append(total)
-#         line_items.append(target_left)
-#         display = "\n".join(line_items)
-#         return display
-
-# for i in problem:
-#       len_list = [i[0], i[2]]
-#       spacing = len(max(len_list, key=len)) + 2
-#       l1.append(str(i[0]).rjust(spacing, " "))
-#       l2.append(str(i[1]).ljust(1, " ") + str(i[2]).rjust(spacing - 1, " "))
-#       l3.append("-" * spacing)
-#       if resolve == True:
-#           l4.append(str(i[3]).rjust(spacing, " "))
-#   line1 = "    ".join(l1)
-#   line2 = "    ".join(l2)
-#   line3 = "    ".join(l3)
-
 class Account:
     def __init__(self, name: str):
         self.ledger = Ledger(name)
