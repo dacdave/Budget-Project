@@ -1,6 +1,5 @@
 from BudgetCalculations import *
 
-
 def old_test():
     food.set_target(850)
     house.set_target(1667.31)
