@@ -324,6 +324,9 @@ def spending(categories):
     total_sum = sum(i.spending for i in categories)
     result = []
     for i in categories:
+      if total_sum == 0:
+        result.append((i.expense_type, 0))
+      else:
         result.append((i.expense_type, (i.spending * 100) // total_sum))
     return result
 
