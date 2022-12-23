@@ -22,7 +22,7 @@ CREATE TABLE Ledger (
     LedgerID SERIAL PRIMARY KEY,
     LedgerName VARCHAR NOT NULL,
     Balance DECIMAL(14, 2) NOT NULL,
-    LedgerAccount INTEGER NULL,
+    LedgerAccountID INTEGER NULL,
     FOREIGN KEY (LedgerAccount) REFERENCES Account(AccountID)
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE TransactionSchedule (
     FOREIGN KEY (ScheduleUser) REFERENCES BudgetUser(UserID)
 );
 
-CREATE TABLE "Transaction" (
+CREATE TABLE BudgetTransaction (
     TransactionID SERIAL PRIMARY KEY,
     Amount DECIMAL(14, 2) NOT NULL,
     TransactionDescription VARCHAR(30) NOT NULL,
